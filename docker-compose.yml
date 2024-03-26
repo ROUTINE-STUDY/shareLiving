@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  # host name
+  shareliving:
+    # image location 
+    image: shareliving
+    # build working directory
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 80:80
+  
+
+    
