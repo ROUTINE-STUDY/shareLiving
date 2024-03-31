@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class ShareLivingApplicationTests {
 
     @Test
-    void contextLoads() throws Exception {
-        throw new Exception("테스트 실패했습니다.");
+    void 컨텍스트_로드() throws Exception {
+
     }
 }
