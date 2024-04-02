@@ -13,14 +13,10 @@ on:
       - main
       - release
       - develop
-    types: [opened,closed]
+    types: [opened,reopened,closed]
 
-  release:
-    # 버전 태그 걸기
-    types: [created]
 
 jobs:
-
   build-and-test:
     if: github.event_name == 'pull_request' && github.event.action == 'opened'
     runs-on: ubuntu-latest
@@ -43,11 +39,26 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
+      
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action/linux@v2
+        if: always()
+        with:
+          files: |
+          build/test-results/**/*.xml
+          build/test-results/**/*.trx
+          build/test-results/**/*.json
 
-      # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-      # the publishing section of your build.gradle
-#      - name: Publish to GitHub Packages
-#        run: ./gradlew publish
-#        env:
-#          USERNAME: ${{ github.actor }}
-#          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Send Test Result to Slack Publish Channel
+        run: |
+          ls ./build/test-results/**/*.xml | xargs cat >> test_result.xml
+          ls -al
+          cat ./test_result.xml
+          grep testsuite test_result.xml > temp_test_result.xml
+          mv temp_test_result.xml test_result.xml
+          grep -o 'tests="[0-9]\+"' test_result.xml >> slack_message
+          grep -o 'skipped="[0-9]\+"' test_result.xml >> slack_message
+          grep -o 'failures="[0-9]\+"' test_result.xml >> slack_message
+          grep -o 'errors="[0-9]\+"' test_result.xml >> slack_message
+          grep -o 'time="[0-9]\+.[0-9]\+' test_result.xml >> slack_message
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"$(cat slack_message | sed "s/\"/'/g")\"}" ${{secrets.SLACK_WEBHOOK_URL}}
