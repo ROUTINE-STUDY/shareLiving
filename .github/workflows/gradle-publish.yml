@@ -18,11 +18,12 @@ on:
 
 jobs:
   build-and-test:
-    if: github.event_name == 'pull_request' && github.event.action == 'opened'
     runs-on: ubuntu-latest
     permissions:
+      checks: write
       contents: read
       packages: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v4
