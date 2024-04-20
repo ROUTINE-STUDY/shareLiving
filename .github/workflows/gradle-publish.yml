@@ -112,7 +112,7 @@ jobs:
 
       - name: Get Docker Image from Docker Hub
         run: |
-          docker pull "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG"
+          
 
       - name: Set up SSH setting
         uses: webfactory/ssh-agent@v0.9.0
@@ -121,7 +121,4 @@ jobs:
 
       - name: Make Container for share_living Server
         run: |
-          ssh -i aws_asia.pem ${{secrets.AWS_EC2_DOMAIN}}
-          docker run --rm --name share_living_test_server -p 80:80 "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG"
-
-
+          ssh -i ${{secrets.SSH_PRIVATE_KEY}} ${{secrets.AWS_EC2_DOMAIN}} 'docker pull "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG" && docker run --rm --name share_living_test_server -p 80:80 '"$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG"'
