@@ -121,4 +121,6 @@ jobs:
 
       - name: Make Container for share_living Server
         run: |
-          ssh -i aws_asia.pem ${{secrets.AWS_EC2_DOMAIN}} 'docker pull "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG" && docker run --rm --name share_living_test_server -p 80:80 '"$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG"'
+          ssh -i aws_asia.pem ${{secrets.AWS_EC2_DOMAIN}} 
+          docker pull "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG" 
+          docker run --rm --name share_living_test_server -p 80:80 "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG"
