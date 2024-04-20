@@ -82,10 +82,12 @@ jobs:
       DOCKER_HUB_IMAGE_TEST_TAG: test
     
     steps:
+      - name: Download the artifact
       - uses: actions/download-artifact@v4
           with:
             name: server-artifact
             path: ./
+
       - name: Publish to Docker Hub
         run: |
           ls -al
