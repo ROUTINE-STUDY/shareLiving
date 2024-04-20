@@ -13,8 +13,7 @@ on:
       - main
       - release
       - develop
-    types: [opened,reopened,closed]
-
+    types: [opened,reopened]
 
 jobs:
   build_and_test:
@@ -64,7 +63,23 @@ jobs:
           grep -o 'time="[0-9]\+.[0-9]\+' test_result.xml >> slack_message
           curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"$(cat slack_message | sed "s/\"/'/g")\"}" ${{secrets.SLACK_WEBHOOK_URL}}
 
+  publish_docker_file:
+    needs: build_and_test
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_HUB_GROUP_NAME: jonathan434
+      DOCKER_HUB_IMAGE_NAME: share_living
+      DOCKER_HUB_IMAGE_TEST_TAG: test
+    
+    steps:
+      - name: Publish to Docker Hub
+        run: |
+          docker login -u ${{secrets.DOCKER_HUB_USER_NAME}} -p ${{secrets.DOCKER_HUB_PASSWORD}}
+          docker build -t "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_NAME" .
+          docker push "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG" 
+
   publish_share_living_test_server:
+    needs: [build_and_test, publish_docker_file]
     runs-on: ubuntu-latest
     env: 
       AWS_ASIA_PEM: ${{secrets.AWS_ASIA_PEM}}
