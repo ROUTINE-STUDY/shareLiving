@@ -67,7 +67,7 @@ jobs:
           curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"$(cat slack_message | sed "s/\"/'/g")\"}" ${{secrets.SLACK_WEBHOOK_URL}}
 
       - name: Upload the build output to artifact
-      - uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4
         with:
           name: server-artifact
           path: build/libs/*.jar
