@@ -75,6 +75,7 @@ jobs:
       DOCKER_HUB_IMAGE_TEST_TAG: test
     
     steps:
+      - uses: actions/checkout@v4
       - name: Publish to Docker Hub
         run: |
           ls -al
