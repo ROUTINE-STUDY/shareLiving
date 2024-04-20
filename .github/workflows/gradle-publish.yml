@@ -115,7 +115,7 @@ jobs:
           docker pull "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG"
 
       - name: Set up SSH setting
-        uses: webfactory/ssh-agent@0.9.0
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{secrets.SSH_PRIVATE_KEY}}
 
