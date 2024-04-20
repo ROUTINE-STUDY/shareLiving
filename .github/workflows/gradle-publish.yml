@@ -87,7 +87,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: server-artifact
-          path: ./
+          path: ./build/libs
 
       - name: Publish to Docker Hub
         run: |
