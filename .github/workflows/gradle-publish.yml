@@ -79,8 +79,7 @@ jobs:
         run: |
           ls -al
           pwd
-          echo ${{secrets.DOCKER_HUB_PASSWORD}} >> docker_password
-          docker login -u ${{secrets.DOCKER_HUB_USER_NAME}} --password-stdin docker_password
+          echo ${{secrets.DOCKER_HUB_PASSWORD}} | docker login -u ${{secrets.DOCKER_HUB_USER_NAME}} --password-stdin 
           docker build -t "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_NAME" .
           docker push "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG" 
 
