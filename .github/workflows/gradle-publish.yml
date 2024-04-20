@@ -66,6 +66,13 @@ jobs:
           grep -o 'time="[0-9]\+.[0-9]\+' test_result.xml >> slack_message
           curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"$(cat slack_message | sed "s/\"/'/g")\"}" ${{secrets.SLACK_WEBHOOK_URL}}
 
+      - name: Upload the build output to artifact
+      - uses: actions/upload-artifact@v4
+        with:
+          name: server-artifact
+          path: build/libs/*.jar
+          retention-days: 3
+
   publish_docker_file:
     needs: build_and_test
     runs-on: ubuntu-latest
@@ -75,11 +82,13 @@ jobs:
       DOCKER_HUB_IMAGE_TEST_TAG: test
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+          with:
+            name: server-artifact
+            path: ./
       - name: Publish to Docker Hub
         run: |
           ls -al
-          pwd
           echo ${{secrets.DOCKER_HUB_PASSWORD}} | docker login -u ${{secrets.DOCKER_HUB_USER_NAME}} --password-stdin 
           docker build -t "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_NAME" .
           docker push "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG" 
