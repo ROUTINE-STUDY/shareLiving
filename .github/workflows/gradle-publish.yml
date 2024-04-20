@@ -90,8 +90,8 @@ jobs:
           path: ./build/libs
 
       - name: Publish to Docker Hub
-        run: |
-          ls -al
+        run: 
+          | ls -al
           echo ${{secrets.DOCKER_HUB_PASSWORD}} | docker login -u ${{secrets.DOCKER_HUB_USER_NAME}} --password-stdin 
           docker build -t "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG" .
           docker push "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG"
@@ -101,7 +101,6 @@ jobs:
     runs-on: ubuntu-latest
     env: 
       AWS_ASIA_PEM: ${{secrets.AWS_ASIA_PEM}}
-      AWS_EC2_DOMAIN: ${{secrets.AWS_EC2_DOMAIN}}
       DOCKER_HUB_GROUP_NAME: jonathan434
       DOCKER_HUB_IMAGE_NAME: share_living
       DOCKER_HUB_IMAGE_TEST_TAG: test
@@ -111,10 +110,19 @@ jobs:
         run: |
           touch aws_asia.pem
           echo $AWS_ASIA_PEM > aws_asia.pem
+
       - name: Get Docker Image from Docker Hub
         run: |
-          ssh -i aws_asia.pem $AWS_EC2_DOMAIN
           docker pull "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG"
+
+      - name: Set up SSH setting
+        uses: webfactory/ssh-agent@0.9.0
+        with:
+          ssh-private-key: ${{secrets.SSH_PRIVATE_KEY}
+
       - name: Make Container for share_living Server
         run: |
+          ssh -i aws_asia.pem ${{secrets.AWS_EC2_DOMAIN}}
           docker run --rm --name share_living_test_server -p 80:80 "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG"
+
+
