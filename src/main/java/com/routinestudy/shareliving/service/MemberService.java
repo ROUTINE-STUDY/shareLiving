@@ -1,5 +1,7 @@
 package com.routinestudy.shareliving.service;
 
+import com.routinestudy.shareliving.common.CustomException;
+import com.routinestudy.shareliving.common.ErrorCode;
 import com.routinestudy.shareliving.domain.Member;
 import com.routinestudy.shareliving.dto.MemberSignUpRequestDto;
 import com.routinestudy.shareliving.repository.MemberRepository;
@@ -20,8 +22,8 @@ public class MemberService {
         Member member = memberSignUpRequestDto.toEntity();
 
         List<Member> findMembers = memberRepository.findByUsername(member.getUsername());
-        if (findMembers.size() > 0) {
-            throw new IllegalArgumentException("중복된 아이디 입니다.");
+        if (!findMembers.isEmpty()) {
+            throw new CustomException(ErrorCode.ALREADY_REGISTERED);
         }
 
         memberRepository.save(member);
