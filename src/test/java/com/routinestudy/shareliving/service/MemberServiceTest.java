@@ -1,5 +1,6 @@
 package com.routinestudy.shareliving.service;
 
+import com.routinestudy.shareliving.common.CustomException;
 import com.routinestudy.shareliving.domain.Member;
 import com.routinestudy.shareliving.dto.MemberSignUpRequestDto;
 import com.routinestudy.shareliving.repository.MemberRepository;
@@ -66,7 +67,7 @@ class MemberServiceTest {
         when(memberRepository.findByUsername(anyString())).thenReturn(existingMembers);
 
         // signUp 메서드 호출 시 IllegalArgumentException 예외가 발생하는지 확인
-        assertThrows(IllegalArgumentException.class, () -> memberService.signUp(requestDto));
+        assertThrows(CustomException.class, () -> memberService.signUp(requestDto));
 
         // findByUsername 메서드가 호출되었는지 확인
         verify(memberRepository, times(1)).findByUsername("duplicateUsername");
