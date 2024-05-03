@@ -1,16 +1,13 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
-
 name: Gradle Package
 
 on:
   push:
     main:
       - main
+      - release
+      - develop
+      - 'feat/*'
+      - 'hotfix/*'
   pull_request:
     branches:
       - main
@@ -20,6 +17,7 @@ on:
 
 jobs:
   build_and_test:
+    if: ${{github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'develop' || startsWith(github.ref_name, 'feat') || startsWith(github.ref_name, 'hotfix'))}}
     runs-on: ubuntu-latest
     permissions:
       checks: write
@@ -73,7 +71,8 @@ jobs:
           path: build/libs/*.jar
           retention-days: 3
 
-  publish_docker_file:
+  publish_docker_test_file:
+    if: ${{github.event_name == 'push' && github.ref_name == 'release'}}
     needs: build_and_test
     runs-on: ubuntu-latest
     env:
@@ -96,7 +95,8 @@ jobs:
           docker push "$DOCKER_HUB_GROUP_NAME/$DOCKER_HUB_IMAGE_NAME:$DOCKER_HUB_IMAGE_TEST_TAG"
 
   publish_share_living_test_server:
-    needs: [build_and_test, publish_docker_file]
+    if: ${{github.event_name == 'push' && github.ref_name == 'release'}}
+    needs: [build_and_test, publish_docker_test_file]
     runs-on: ubuntu-latest
     env: 
       AWS_ASIA_PEM: ${{secrets.AWS_ASIA_PEM}}
