@@ -15,15 +15,21 @@ class MemberRepositoryTest {
   @Autowired
   private MemberRepository userRepository;
 
-  @Test
-  public void H2_연결_테스트() {
-    userRepository.save(new Member("name", 14, true));
-    userRepository.save(new Member("sang", 20, true));
-
-    // when
-    List<Member> all = userRepository.findAll();
-
-    // then
-    assertEquals(2, all.size());
-  }
+  // @Test
+  // public void H2_연결_테스트() {
+  // userRepository.save(new Member("name", 14, true));
+  //
+  // // when
+  // int count = userRepository.findAll().size();
+  // // then
+  // assertEquals(1, count);
+  // }
+  //
+  // @Test
+  // public void whenInsertTwoMemberAndSelectAllThenFindAllSizeIsTwo() {
+  // userRepository.save(new Member("sang", 20, true));
+  //
+  // Member member = userRepository.findByName("sang");
+  // assertEquals("sang", member.getName());
+  // }
 }

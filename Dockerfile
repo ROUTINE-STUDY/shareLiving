@@ -30,4 +30,4 @@ COPY --from=builder /app/build/libs/shareLiving-*.jar shareliving.jar
 EXPOSE 80
 
 # ENTRYPOINT로 Spring Boot 애플리케이션 실행
-ENTRYPOINT ["sh", "-c", "java -Dspring.profiles.active=${environment} ${JAVA_OPTS} -jar /shareliving.jar"]
+ENTRYPOINT ["sh", "-c", "java -Dspring.profiles.active=prod ${JAVA_OPTS} -jar /shareliving.jar"]
