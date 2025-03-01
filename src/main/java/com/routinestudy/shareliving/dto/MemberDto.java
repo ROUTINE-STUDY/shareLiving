@@ -14,14 +14,9 @@ public class MemberDto {
     isActiveMember = user.getIsActiveMember();
   }
 
-  private long id;
   private String name;
   private int age;
   private boolean isActiveMember;
-
-  public long getId() {
-    return id;
-  }
 
   public String getName() {
     return name;
