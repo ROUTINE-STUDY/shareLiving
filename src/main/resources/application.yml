@@ -2,6 +2,9 @@ server:
   port: 80
 
 spring:
+  config:
+    activate:
+      on-profile: local
   datasource:
     #url: jdbc:h2:~/test
     url: jdbc:h2:mem:test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
@@ -15,5 +18,66 @@ spring:
     hibernate:
       ddl-auto: create
 
-logging.level:
-  org.hibernate.SQL: debug # SQL ?? ??
+logging:
+  file:
+    name: ./spring.log
+    max-history: 30
+  level:
+    org:
+      springframework: INFO
+---
+server:
+  port: 80
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    #url: jdbc:h2:~/test
+    url: jdbc:h2:mem:test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+logging:
+  file:
+    name: ./spring.log
+    max-history: 30
+  level:
+    org:
+      springframework: DEBUG
+---
+server:
+  port: 80
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    #url: jdbc:h2:~/test
+    url: jdbc:h2:mem:test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+logging:
+  file:
+    name: ./spring.log
+    max-history: 30
+  level:
+    org:
+      springframework: INFO

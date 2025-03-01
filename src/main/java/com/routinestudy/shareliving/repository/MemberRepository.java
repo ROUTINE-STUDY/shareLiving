@@ -1,10 +1,10 @@
 package com.routinestudy.shareliving.repository;
 
-import com.routinestudy.shareliving.domain.Hello;
+import com.routinestudy.shareliving.domain.Member;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TestRepository extends JpaRepository<Hello, Long> {
-
+public interface MemberRepository extends JpaRepository<Member, Long> {
 }
